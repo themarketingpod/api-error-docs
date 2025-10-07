@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Server Error - API Documentation</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+    }
+    .nav {
+      margin-bottom: 30px;
+    }
+    .nav a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+    dl {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid #0066cc;
+    }
+    dt {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    dt:first-child {
+      margin-top: 0;
+    }
+    dd {
+      margin-left: 0;
+      margin-bottom: 10px;
+    }
+    h1 {
+      color: #d32f2f;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #555;
+      margin-top: 30px;
+    }
+    ul, ol {
+      line-height: 1.8;
+    }
+    a {
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav"><a href="/">← Back to all errors</a></div>
+  
+  <h1>Internal Server Error</h1>
+  
+  <dl>
+    <dt>Type URI</dt>
+    <dd><code>https://api.marketingpod.dev/problems/internal-error</code></dd>
+    
+    <dt>Status Code</dt>
+    <dd>500 Internal Server Error</dd>
+    
+    <dt>Description</dt>
+    <dd>An unexpected error occurred while processing the request.</dd>
+  </dl>
+  
+  <h2>Example Response</h2>
+  <pre><code>{
+  "type": "https://api.marketingpod.dev/problems/internal-error",
+  "title": "Internal Server Error",
+  "status": 500,
+  "detail": "An unexpected error occurred while processing the request.",
+  "instance": "/api/v1/integration/req_1704123456789_abc",
+  "requestId": "req_1704123456789_abc",
+  "timestamp": "2024-10-07T12:34:56.789Z"
+}</code></pre>
+  
+  <h2>Common Causes</h2>
+  <ul>
+    <li>Unexpected server-side exception</li>
+    <li>Configuration error</li>
+    <li>Dependency failure</li>
+  </ul>
+  
+  <h2>How to Fix</h2>
+  <ol>
+    <li>Retry the request (this may be a transient error)</li>
+    <li>If the problem persists, contact support</li>
+    <li>Include the <code>requestId</code> when reporting the issue</li>
+    <li>Check the API status page for known incidents</li>
+  </ol>
+
+  <h2>Related Errors</h2>
+  <ul>
+    <li><a href="/problems/service-bus-error">Service Bus Error</a></li>
+  </ul>
+  
+  <hr style="margin-top: 50px; border: none; border-top: 1px solid #e0e0e0;">
+  <p style="font-size: 0.9em; color: #666;">
+    <strong>Need help?</strong> Contact <a href="mailto:developers@marketingpod.com">developers@marketingpod.com</a> 
+    and include the <code>requestId</code> from your error response.
+  </p>
+</body>
+</html>

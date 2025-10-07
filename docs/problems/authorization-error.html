@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authorization Error - API Documentation</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.9em;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+    }
+    .nav {
+      margin-bottom: 30px;
+    }
+    .nav a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+    dl {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid #0066cc;
+    }
+    dt {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    dt:first-child {
+      margin-top: 0;
+    }
+    dd {
+      margin-left: 0;
+      margin-bottom: 10px;
+    }
+    h1 {
+      color: #d32f2f;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #555;
+      margin-top: 30px;
+    }
+    ul, ol {
+      line-height: 1.8;
+    }
+    a {
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav"><a href="/">← Back to all errors</a></div>
+  
+  <h1>Authorization Error</h1>
+  
+  <dl>
+    <dt>Type URI</dt>
+    <dd><code>https://api.marketingpod.dev/problems/authorization-error</code></dd>
+    
+    <dt>Status Code</dt>
+    <dd>403 Forbidden</dd>
+    
+    <dt>Description</dt>
+    <dd>The token does not have the required 'Access.API' role to access this resource.</dd>
+  </dl>
+  
+  <h2>Example Response</h2>
+  <pre><code>{
+  "type": "https://api.marketingpod.dev/problems/authorization-error",
+  "title": "Authorization Error",
+  "status": 403,
+  "detail": "The token does not have the required 'Access.API' role to access this resource.",
+  "instance": "/api/v1/integration/req_1704123456789_abc",
+  "requestId": "req_1704123456789_abc",
+  "timestamp": "2024-10-07T12:34:56.789Z",
+  "requiredRoles": ["Access.API"],
+  "providedRoles": []
+}</code></pre>
+  
+  <h2>Common Causes</h2>
+  <ul>
+    <li>Token does not include the required <code>Access.API</code> role</li>
+    <li>Client application has not been granted the necessary API permissions</li>
+    <li>Token was issued for a different API scope</li>
+  </ul>
+  
+  <h2>How to Fix</h2>
+  <ol>
+    <li>Contact the API administrator to request the <code>Access.API</code> role</li>
+    <li>Verify your application registration includes the required API permissions</li>
+    <li>Ensure you are requesting the correct scope when obtaining the access token</li>
+    <li>Check the <code>roles</code> claim in your decoded JWT token</li>
+  </ol>
+
+  <h2>Related Errors</h2>
+  <ul>
+    <li><a href="/problems/authentication-error">Authentication Error</a></li>
+  </ul>
+  
+  <hr style="margin-top: 50px; border: none; border-top: 1px solid #e0e0e0;">
+  <p style="font-size: 0.9em; color: #666;">
+    <strong>Need help?</strong> Contact <a href="mailto:developers@marketingpod.com">developers@marketingpod.com</a> 
+    and include the <code>requestId</code> from your error response.
+  </p>
+</body>
+</html>
