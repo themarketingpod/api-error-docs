@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>401 — HubSpot Signature Validation Error</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 0 20px;
+        line-height: 1.6;
+        color: #333;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.9em;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 0.9em;
+      }
+      pre code {
+        background: none;
+        padding: 0;
+      }
+      .nav {
+        margin-bottom: 30px;
+      }
+      .nav a {
+        color: #0066cc;
+        text-decoration: none;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+      dl {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 6px;
+        border-left: 4px solid #0066cc;
+      }
+      dt {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      dt:first-child {
+        margin-top: 0;
+      }
+      dd {
+        margin-left: 0;
+        margin-bottom: 10px;
+      }
+      h1 {
+        color: #d32f2f;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 10px;
+      }
+      h2 {
+        color: #555;
+        margin-top: 30px;
+      }
+      ul,
+      ol {
+        line-height: 1.8;
+      }
+      a {
+        color: #0066cc;
+      }
+      .pill {
+        display: inline-block;
+        background: #ffe9e9;
+        color: #b00020;
+        border: 1px solid #ffc2c2;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 0.85em;
+        margin-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav"><a href="/">← Back to all errors</a></div>
+
+    <h1>
+      HubSpot Signature Validation Error
+      <span class="pill">401 Unauthorized</span>
+    </h1>
+
+    <dl>
+      <dt>Type URI</dt>
+      <dd>
+        <code
+          >https://api.marketingpod.dev/problems/hubspot-signature-validation-error</code
+        >
+      </dd>
+
+      <dt>Status Code</dt>
+      <dd>401 Unauthorized</dd>
+
+      <dt>Description</dt>
+      <dd>
+        Requests from HubSpot must include valid
+        <code>x-hubspot-signature-v3</code> and
+        <code>x-hubspot-request-timestamp</code> headers. This error occurs when
+        one or more of the following is true: the headers are missing, the
+        timestamp is older than 5 minutes, or the computed signature does not
+        match the value in <code>x-hubspot-signature-v3</code>.
+      </dd>
+
+      <dt>Expected Headers</dt>
+      <dd>
+        <ul>
+          <li>
+            <code>x-hubspot-signature-v3: &lt;base64 HMAC-SHA256&gt;</code>
+          </li>
+          <li>
+            <code>x-hubspot-request-timestamp: &lt;unix ms timestamp&gt;</code>
+          </li>
+        </ul>
+      </dd>
+    </dl>
+
+    <h2>Example Response</h2>
+    <pre><code>{
+  "type": "https://api.marketingpod.dev/problems/hubspot-signature-validation-error",
+  "title": "Error authenticating HubSpot signature",
+  "status": 401,
+  "detail": "Missing or invalid x-hubspot-signature-v3; check timestamp and signature construction.",
+  "instance": "/api/v1/integration/req_1704123456789_abc",
+  "requestId": "req_1704123456789_abc",
+  "timestamp": "2024-10-07T12:34:56.789Z"
+}</code></pre>
+
+    <h2>Validation Rules</h2>
+    <ul>
+      <li>
+        Reject if <code>now - x-hubspot-request-timestamp &gt; 5 minutes</code>.
+      </li>
+      <li>
+        Build the source string:
+        <code>requestMethod + requestUri + requestBody + timestamp</code>.
+      </li>
+      <li>
+        Create HMAC-SHA256 with your HubSpot app secret, then Base64-encode the
+        result.
+      </li>
+      <li>
+        Compare your computed value to <code>x-hubspot-signature-v3</code> using
+        a constant-time comparison.
+      </li>
+    </ul>
+
+    <h2>Common Causes</h2>
+    <ul>
+      <li>
+        Missing <code>x-hubspot-signature-v3</code> or
+        <code>x-hubspot-request-timestamp</code> header.
+      </li>
+      <li>Timestamp older than 5 minutes (clock skew or replayed request).</li>
+      <li>
+        Concatenation uses the wrong <em>requestUri</em> (must include scheme,
+        host, and path you received).
+      </li>
+      <li>
+        Body mismatch due to re-encoding/minified JSON (use the exact raw
+        request body string).
+      </li>
+      <li>
+        Including a body for <code>GET</code> requests (should be empty when
+        constructing the source string).
+      </li>
+      <li>
+        Using the wrong secret (use the app’s client secret for the HubSpot app
+        that sent the request).
+      </li>
+    </ul>
+
+    <h2>How to Fix</h2>
+    <ol>
+      <li>
+        Ensure both headers are present and your server clock is accurate (NTP
+        synced).
+      </li>
+      <li>
+        Read the raw request body as a string without reformatting or sorting
+        keys.
+      </li>
+      <li>
+        Construct the string:
+        <code>{METHOD}{URI}{RAW_BODY}{X-HubSpot-Request-Timestamp}</code>. For
+        example:
+        <pre><code>POSThttps://example.com/webhooks{"eventId":123}1730909999123</code></pre>
+      </li>
+      <li>
+        Compute
+        <code>Base64(HMAC_SHA256(sourceString, HUBSPOT_APP_SECRET))</code>.
+      </li>
+      <li>
+        Compare (constant-time) with the value in
+        <code>x-hubspot-signature-v3</code>.
+      </li>
+      <li>
+        If the timestamp is too old or the signature doesn’t match, respond with
+        this 401 and do not process the payload.
+      </li>
+    </ol>
+
+    <h2>Example: Pseudocode</h2>
+    <pre><code>// Pseudocode
+const ts = headers["x-hubspot-request-timestamp"];
+const sig = headers["x-hubspot-signature-v3"];
+if (!ts || !sig) return 401;
+
+if (Date.now() - Number(ts) &gt; 5 * 60 * 1000) return 401;
+
+const uri = request.fullUrl;                // scheme + host + path (and query if present)
+const body = request.rawBodyString || "";   // exact raw bytes as string
+const source = request.method + uri + body + ts;
+
+const expected = Base64(HMAC_SHA256(source, HUBSPOT_APP_SECRET));
+
+if (!timingSafeEqual(expected, sig)) return 401;</code></pre>
+
+    <h2>Related Errors</h2>
+    <ul>
+      <li><a href="/problems/authorization-error">Authorization Error</a></li>
+      <li><a href="/problems/authentication-error">Authentication Error</a></li>
+    </ul>
+
+    <hr style="margin-top: 50px; border: none; border-top: 1px solid #e0e0e0" />
+    <p style="font-size: 0.9em; color: #666">
+      <strong>Need help?</strong>
+      Contact
+      <a href="mailto:developers@marketingpod.com"
+        >developers@marketingpod.com</a
+      >
+      and include the <code>requestId</code> plus the values of
+      <code>x-hubspot-request-timestamp</code> and
+      <code>x-hubspot-signature-v3</code> from the failing request. See
+      HubSpot’s docs on request validation for more details:
+      <a
+        href="https://developers.hubspot.com/docs/guides/apps/authentication/validating-requests"
+        >Validating requests</a
+      >.
+    </p>
+  </body>
+</html>
